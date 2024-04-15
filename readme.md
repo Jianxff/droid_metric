@@ -42,8 +42,10 @@ python -m scripts.run --rgb $/path/to/rgb/dir --depth $/path/to/depth/dir --viz
 
 ### preview
 ![without depth](assets/w_o_depth.png)
+
 ***w/o metric depth***
 
 ![with depth](assets/w_depth.png)
+
 ***w/ metric depth***
 
