@@ -2,7 +2,7 @@
 
 This repo is for project combind [DROID-SLAM](https://github.com/princeton-vl/DROID-SLAM) and [Metric3D](https://github.com/YvanYin/Metric3D), taking metric depth to improve the performance of DROID-SLAM in monocular mode.
 
-#### installation
+### installation
 ```bash
 # clone the repo with '--recursive' to get the submodules
 # or run 'git submodule update --init --recursive' after cloning
@@ -19,7 +19,7 @@ conda install pytorch==2.0.0 torchvision==0.15.0 torchaudio==2.0.0 pytorch-cuda=
 pip install -r requirements.txt
 ```
 
-#### usage
+### usage
 ###### 1. pretrained models
 Download the pretrained model following the official page of [DROID-SLAM](https://github.com/princeton-vl/DROID-SLAM) and [Metric3D](https://github.com/YvanYin/Metric3D).
 
@@ -40,7 +40,7 @@ python -m scripts.run --rgb $/path/to/rgb/dir --depth $/path/to/depth/dir --viz
 ```
 
 
-#### preview
+### preview
 ![without depth](assets/w_o_depth.png)
 ***w/o metric depth***
 
