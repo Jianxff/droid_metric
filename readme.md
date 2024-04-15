@@ -31,12 +31,12 @@ For video sampling, check `scripts/sample.py`
 ###### 3. run
 ```bash
 ## depth estimate
-python -m scripts.predict --images $/path/to/images --out $/path/to/output
-# for more options, check `scripts/predict.py`
+python depth.py --images $/path/to/images --out $/path/to/output
+# for more options, check `depth.py`
 
 ## droid-slam
-python -m scripts.run --rgb $/path/to/rgb/dir --depth $/path/to/depth/dir --viz
-# for more options, check `scripts/run.py`
+python run.py --rgb $/path/to/rgb/dir --depth $/path/to/depth/dir --viz
+# for more options, check `run.py`
 ```
 
 
