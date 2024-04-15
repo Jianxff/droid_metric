@@ -1,0 +1,32 @@
+name: droidrecon
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.9
+  - pytorch==2.0.0
+  - cudatoolkit=11.8 
+  - pytorch-cuda=11.8
+  - torchvision==0.15.0
+  - suitesparse
+  - pip:
+    - tqdm
+    - scipy
+    - tensorboard
+    - opencv-python   
+    # droid slam 
+    - torch-scatter
+    - open3d
+    - matplotlib
+    - pyyaml
+    - evo
+    - gdown
+    # vis fusion
+    - trimesh
+    - transforms3d
+    - pyrender
+    - open3d
+    - git+https://github.com/mit-han-lab/torchsparse.git # torchsparse
+    - https://github.com/JamieWatson683/scikit-image/archive/single_mesh.zip # single mesh for measure.marching_cubes

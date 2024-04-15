@@ -1,0 +1,6 @@
+[submodule "modules/droid_slam"]
+	path = modules/droid_slam
+	url = https://github.com/princeton-vl/DROID-SLAM
+[submodule "modules/metric3d"]
+	path = modules/metric3d
+	url = https://github.com/YvanYin/Metric3D

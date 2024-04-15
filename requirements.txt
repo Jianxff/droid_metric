@@ -1,0 +1,18 @@
+opencv-python   
+gdown
+tqdm 
+# droid slam
+torch-scatter
+open3d
+tensorboard
+scipy
+matplotlib
+pyyaml
+evo
+# metric3d
+mmengine
+mmcv
+timm
+html4vision
+plyfile
+xformers
