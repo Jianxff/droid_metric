@@ -17,6 +17,11 @@ conda install pytorch==2.0.0 torchvision==0.15.0 torchaudio==2.0.0 pytorch-cuda=
 
 # install python packages
 pip install -r requirements.txt
+
+# intsall droid-slam
+cd module/droid_slam
+python setup.py install
+cd ../..
 ```
 
 ### usage
