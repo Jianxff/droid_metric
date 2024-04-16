@@ -8,6 +8,8 @@ import cv2
 import numpy as np
 from tqdm import tqdm
 from PIL import Image
+from lietorch import SO3
+import torch
 
 def sample_from_video(
     video_path: Union[Path, str],
@@ -41,9 +43,9 @@ def sample_from_video(
 
 def calibrate_camera(
     images: Union[str, Path, List[Union[str, Path, np.ndarray, Image.Image]]],
+    pattern_type: str, # 'chessboard' or 'circle'
     pattern_size: Tuple[int, int], # (rows, cols)
     square_size: float = 15.0,
-    pattern_type: str = 'chessboard', # 'chessboard' or 'circle'
     image_limit: int = 150
 ) -> Tuple[float, np.ndarray, np.ndarray]: # Intrinsics, Distortion
     assert pattern_type in ['chessboard', 'circle'], \
@@ -107,8 +109,29 @@ def calibrate_camera(
     if del_cache is not None:
         shutil.rmtree(str(del_cache), ignore_errors=True)
 
-    intrinsic = [mtx[0][0], mtx[1][1], mtx[0][2], mtx[1][2]]
-    distortion = [dist[0][0], dist[0][1], dist[0][2], dist[0][3], dist[0][4]]
+    intrinsic = np.array([mtx[0][0], mtx[1][1], mtx[0][2], mtx[1][2]]).flatten()
+    distortion = np.array([dist[0][0], dist[0][1], dist[0][2], dist[0][3], dist[0][4]]).flatten()
     
 
     return (ret, intrinsic, distortion)
+
+
+def trajecitry_to_poses(
+    traj: Union[str, Path, np.ndarray],
+    out_dir: Union[str, Path]
+) -> None:
+    if isinstance(traj, (str, Path)):
+        traj = np.loadtxt(traj)
+    out_dir = Path(out_dir)
+
+    os.makedirs(str(out_dir), exist_ok=True)
+    
+    for i in range(len(traj)):
+        pose = traj[i]
+        t, q = pose[:3], pose[3:]
+        R = SO3.InitFromVec(torch.Tensor(q))
+        # Twc = [R | t]
+        T = R.matrix().detach().cpu().numpy().astype(np.float32)
+        T[:3, 3] = t.T
+        # write to poses
+        np.savetxt(out_dir / f'{i:06d}.txt', T)
