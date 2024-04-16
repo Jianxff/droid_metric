@@ -17,7 +17,6 @@ __ALL__ = ['run', 'Options']
 class Options:
     image_size: np.ndarray = None
     weights: Path = Path('weights/droid.pth')
-    focal: float = None
     stereo: bool = False
     t0: int = 0
     stride: int = 1
@@ -36,8 +35,14 @@ class Options:
     backend_nms: int = 3
     upsample: bool = False
     reconstruction_path: Path = None
+    # new options
+    intrinsic: np.ndarray = None
+    focal: float = None
+    trajectory_path: Path = None
+    poses_dir: Path = None
     depth_scale: float = 1.0
     distort: np.ndarray = None
+    global_ba_frontend: int = 0
 
 def show_image(image):
     image = image.permute(1, 2, 0).cpu().numpy()
@@ -63,13 +68,19 @@ def image_stream(image_dir: Path, setting: Options, depth_dir: Path = None):
             "depth and image size mismatch"
 
     # calculate intrinsic
-    h, w = first_image.shape[:2]
-    if focal is None: focal = np.max([h, w]) # predict focal length
-    cx, cy = w / 2, h / 2
     K = np.eye(3)
-    K[0, 0] = K[1, 1] = focal
-    K[0, 2], K[1, 2] = cx, cy
-    intrinsic = torch.as_tensor([focal, focal, cx, cy])
+    if setting.intrinsic is None:
+        h, w = first_image.shape[:2]
+        if focal is None: focal = np.max([h, w]) # predict focal length
+        cx, cy = w / 2, h / 2    
+        K[0, 0] = K[1, 1] = focal
+        K[0, 2], K[1, 2] = cx, cy
+        intrinsic = torch.as_tensor([focal, focal, cx, cy])
+    else:
+        intrinsic = setting.intrinsic
+        K[0, 0], K[1, 1] = intrinsic[0], intrinsic[1] # fx, fy
+        K[0, 2], K[1, 2] = intrinsic[2], intrinsic[3] # cx, cy
+        intrinsic = torch.as_tensor(setting.intrinsic)
 
     # resize intrinsic
     h0, w0, _ = first_image.shape
@@ -113,27 +124,46 @@ def run(
 
     torch.multiprocessing.set_start_method('spawn')
 
+    keyframe_watcher = 0
+
     for (t, data, intrinsic) in tqdm(image_stream(image_dir, setting, depth_dir)):
         if t < setting.t0:
             continue
-
+        # check depth data
         if depth_dir is not None:
             image, depth = data
         else:
             image, depth = data, None
-    
+        # show image if visualize
         if not setting.disable_vis:
             show_image(image[0])
-            
+        # create droid instance if None
         if droid is None:
             setting.image_size = [image.shape[2], image.shape[3]]
             droid = Droid(setting)
-
+        
+        # front end
         droid.track(tstamp=t, image=image, depth=depth, intrinsics=intrinsic)
+        
+        # check keyframe and run global-ba
+        keyframes = droid.video.counter.value
+        if keyframes != keyframe_watcher:
+            keyframe_watcher = keyframes
+            if setting.global_ba_frontend > 0 and keyframes >= np.min([3, setting.global_ba_frontend]):
+                if keyframes % setting.global_ba_frontend == 0:    
+                    droid.backend()
+
     
     if setting.reconstruction_path is not None:
         droid.save(setting.reconstruction_path)
     
     traj_est = droid.terminate(image_stream(image_dir, setting))
 
-    return traj_est
+    if setting.trajectory_path is not None:
+        np.savetxt(setting.trajectory_path, traj_est)
+
+    if setting.poses_dir is not None:
+        from .utils import trajecitry_to_poses
+        trajecitry_to_poses(traj_est, setting.poses_dir)
+    
+    print('finished')
