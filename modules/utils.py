@@ -11,6 +11,7 @@ from PIL import Image
 from lietorch import SO3
 import torch
 
+
 def sample_from_video(
     video_path: Union[Path, str],
     output_dir: Union[Path, str],
@@ -116,9 +117,16 @@ def calibrate_camera(
     return (ret, intrinsic, distortion)
 
 
-def trajecitry_to_poses(
+def quaternion_to_matrix(q: np.ndarray) -> np.ndarray:
+    Q = SO3.InitFromVec(torch.Tensor(q))
+    R = Q.matrix().detach().cpu().numpy().astype(np.float32)
+    return R[:3, :3]
+
+
+def trajectory_to_poses(
     traj: Union[str, Path, np.ndarray],
-    out_dir: Union[str, Path]
+    out_dir: Union[str, Path],
+    convert_opengl: bool = False
 ) -> None:
     if isinstance(traj, (str, Path)):
         traj = np.loadtxt(traj)
@@ -129,9 +137,28 @@ def trajecitry_to_poses(
     for i in range(len(traj)):
         pose = traj[i]
         t, q = pose[:3], pose[3:]
-        R = SO3.InitFromVec(torch.Tensor(q))
+        R = quaternion_to_matrix(q)
+        T = np.eye(4)
         # Twc = [R | t]
-        T = R.matrix().detach().cpu().numpy().astype(np.float32)
-        T[:3, 3] = t.T
+        T[:3, :3] = R
+        T[:3, 3] = t
+        if convert_opengl:
+            T = np.array([[1, 0, 0, 0], [0, -1, 0, 0], [0, 0, -1, 0], [0, 0, 0, 1]]) @ T 
         # write to poses
         np.savetxt(out_dir / f'{i:06d}.txt', T)
+
+
+def K_from_intr(
+    intr: Optional[np.ndarray] = None,
+    fx: Optional[float] = None,
+    fy: Optional[float] = None,
+    cx: Optional[float] = None,
+    cy: Optional[float] = None
+) -> np.ndarray:
+    if intr is None:
+        intr = np.array([fx, fy, cx, cy])
+    K = np.eye(3)
+    K[0, 0], K[1, 1] = intr[0], intr[1]
+    K[0, 2], K[1, 2] = intr[2], intr[3]
+    return K
+

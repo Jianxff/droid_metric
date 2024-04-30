@@ -1,14 +1,11 @@
 # standard library
 from pathlib import Path
 from typing import *
-import os
 # third party
 import argparse
-from lietorch import SO3
-import torch
 import numpy as np
 # droid slam
-from module import Droid
+from modules import Droid
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -21,7 +18,7 @@ if __name__ == "__main__":
     parser.add_argument("--focal", type=float, default=None, help="focal length")
     parser.add_argument("--calib", type=str, default=None, help="calib file, overwrite focal")
     parser.add_argument("--weight", type=str, default='./weights/droid.pth', help="checkpoint file")
-    parser.add_argument("--gloabl-ba-frontend", type=int, default=0, help="frequency to run global ba on frontend")
+    parser.add_argument("--global-ba-frontend", type=int, default=0, help="frequency to run global ba on frontend")
     args = parser.parse_args()
 
     image_dir = Path(args.rgb).resolve()
@@ -38,7 +35,7 @@ if __name__ == "__main__":
     opt.depth_scale = args.depth_scale      # depth scale factor
 
     # global ba on frontend, 0 (set to off) by default
-    opt.ba_frontend = args.gloabl_ba_frontend   # frequency to run global ba on frontend
+    opt.global_ba_frontend = args.global_ba_frontend   # frequency to run global ba on frontend
 
     # camera calibration
     if args.calib:

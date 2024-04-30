@@ -1,6 +1,6 @@
 import argparse
 import numpy as np
-from module import utils
+from modules import utils
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

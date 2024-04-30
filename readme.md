@@ -13,12 +13,12 @@ conda create -n droid_metric python=3.9
 conda activate droid_metric
 
 # install pytorch (other versions may also work)
-conda install pytorch==2.0.0 torchvision==0.15.0 torchaudio==2.0.0 pytorch-cuda=11.7 -c pytorch -c nvidia
+conda install pytorch==2.0.0 torchvision==0.15.0 pytorch-cuda=11.7 -c pytorch -c nvidia
 
 # install python packages
 pip install -r requirements.txt
 
-# intsall droid-slam
+# intsall droid-slam-backend
 cd module/droid_slam
 python setup.py install
 cd ../..
@@ -36,12 +36,22 @@ For video sampling, check `scripts/sample.py`
 ###### 3. run
 ```bash
 ## depth estimate
-python depth.py --images $/path/to/images --out $/path/to/output
+python depth.py --images $/path/to/images --out $/path/to/output --calib $/path/to/calib/file
 # for more options, check `depth.py`
 
 ## droid-slam
-python run.py --rgb $/path/to/rgb/dir --depth $/path/to/depth/dir --viz
+python run.py --rgb $/path/to/rgb/dir --depth $/path/to/depth/dir --calib $/path/to/calib/file --viz
 # for more options, check `run.py`
+
+## mesh recon
+python mesh.py --rgb $/path/to/rgb/dir --depth $/path/to/depth/dir --traj $/path/to/pose/dir --calib $/path/to/calib/file --mesh $/path/to/output/mesh/ply
+# for more options, check `mesh.py`
+```
+
+##### 4.scripts
+```bash
+## test depth estimate, droid slam and mesh reconstruction for rgb image sequence
+python -m scripts.test_seq --rgb $/path/to/rgb/dir --depth $/path/to/depth/dir --poses $/path/to/pose/dir --mesh $/path/to/output/mesh/ply --calib $/path/to/calib/file --viz
 ```
 
 

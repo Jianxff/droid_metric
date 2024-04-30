@@ -5,7 +5,7 @@ import shutil, os
 # third party
 import argparse
 # sample
-from module.utils import sample_from_video
+from modules.utils import sample_from_video
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
