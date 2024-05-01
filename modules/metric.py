@@ -45,7 +45,7 @@ class Metric3D:
         self,
         rgb_image: Union[np.ndarray, Image.Image, str, Path],
         focal: Optional[float] = None,
-    ) -> None:
+    ) -> np.ndarray:
         # read image
         if isinstance(rgb_image, (str, Path)):
             rgb_image = np.array(Image.open(rgb_image))

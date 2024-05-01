@@ -1,5 +1,6 @@
 # standard library
 from typing import *
+from pathlib import Path
 # third party
 import argparse
 import numpy as np
@@ -15,7 +16,8 @@ if __name__ == "__main__":
     parser.add_argument("--viz", type=bool, default=False, help="visualize")
     parser.add_argument("--focal", type=float, default=None, help="focal length")
     parser.add_argument("--calib", type=str, default=None, help="calib file, overwrite focal")
-    parser.add_argument("--mesh", type=str, default=None, help="save mesh")
+    parser.add_argument("--mesh", type=str, default=None, help="save mesh", required=True)
+    parser.add_argument("--voxel_length", type=float, default=0.05, help="voxel length")
 
     args = parser.parse_args()
 
@@ -34,9 +36,9 @@ if __name__ == "__main__":
         traj_dir=args.traj,
         intrinsic=intr,
         distort=distort,
-        depth_scale=args.depth_scale,
         viz=args.viz,
-        mesh_save=args.mesh
+        voxel_length=args.voxel_length,
+        mesh_save=Path(args.mesh).parent / 'mesh_raw.ply'
     )
     
     RGBDFusion.simplify_mesh(

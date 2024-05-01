@@ -17,7 +17,6 @@ if __name__ == "__main__":
     parser.add_argument("--focal", help='focal length', type=float, default=None)
     parser.add_argument("--calib", help='calibration file, overwrite focal', type=str, default=None)
     parser.add_argument("--out", help='dir for output depth', type=str, default='')
-    parser.add_argument("--depth-scale", help='depth scale factor', type=float, default=1000.0)
     parser.add_argument("--ckpt", type=str, default='./weights/metric_depth_vit_large_800k.pth', help='checkpoint file')
     parser.add_argument("--model-name", type=str, default='v2-L', choices=['v2-L', 'v2-S'], help='model type')
     args = parser.parse_args()
@@ -30,7 +29,6 @@ if __name__ == "__main__":
         checkpoint=args.ckpt,
         model_name=args.model_name
     )
-    d_scale = args.depth_scale
 
     image_dir = Path(args.images).resolve()
     images = list(image_dir.glob('*.[p|j][n|p]g'))
@@ -43,8 +41,7 @@ if __name__ == "__main__":
         depth = metric(image, args.focal)
 
         # save orignal depth
-        depth_u16 = (depth * d_scale).astype('uint16')
-        cv2.imwrite(str(out_dir / f'{image.stem}.png'), depth_u16)
+        np.save(str(out_dir / f'{image.stem}.npy'), depth)
 
         # save colormap
         depth_color = metric.gray_to_colormap(depth)

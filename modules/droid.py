@@ -39,8 +39,8 @@ class Options:
     intrinsic: np.ndarray = None
     focal: float = None
     trajectory_path: Path = None
+    convert_pose_gl: bool = False
     poses_dir: Path = None
-    depth_scale: float = 1.0
     distort: np.ndarray = None
     global_ba_frontend: int = 0
 
@@ -55,7 +55,6 @@ class RGBDStream(PosedImageStream):
         self,
         image_dir: Path,
         depth_dir: Optional[Path],
-        depth_scale: float = 1000.0,
         stride: Optional[int] = 1,
         intrinsic: Optional[Union[float, np.ndarray]] = None,
         distort: Optional[np.ndarray] = None,
@@ -64,7 +63,6 @@ class RGBDStream(PosedImageStream):
         super().__init__(
             image_dir=image_dir,
             depth_dir=depth_dir,
-            depth_scale=depth_scale,
             stride=stride,
             intrinsic=intrinsic,
             distort=distort,
@@ -101,7 +99,6 @@ def run(
     dataset = RGBDStream(
         image_dir=image_dir,
         depth_dir=depth_dir,
-        depth_scale=setting.depth_scale,
         stride=setting.stride,
         intrinsic=setting.intrinsic if setting.intrinsic is not None else setting.focal,
         distort=setting.distort,
@@ -140,11 +137,13 @@ def run(
             yield t, im, intr
     traj_est = droid.terminate(extract_rgb_stream(dataset))
 
+    # save raw trajectory under opencv coordinate
     if setting.trajectory_path is not None:
-        np.savetxt(setting.trajectory_path, traj_est)
+        np.savetxt(str(setting.trajectory_path), traj_est)
 
+    # save pose44 matrix under opencv/opengl coordinate, ordered by frame
     if setting.poses_dir is not None:
         from .utils import trajectory_to_poses
-        trajectory_to_poses(traj_est, setting.poses_dir)
+        trajectory_to_poses(traj_est, setting.poses_dir, convert_opengl=setting.convert_pose_gl)
     
     print('finished')

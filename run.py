@@ -13,7 +13,6 @@ if __name__ == "__main__":
     parser.add_argument("--depth", type=str, help="depth directory", default=None)
     parser.add_argument("--traj", type=str, help="trajectory file", default="./trajectory.txt")
     parser.add_argument("--poses", type=str, help="result directory", default=None)
-    parser.add_argument("--depth-scale", type=float, default=1000.0, help="depth scale factor")
     parser.add_argument("--viz", action='store_true', help="visualize", default=False)
     parser.add_argument("--focal", type=float, default=None, help="focal length")
     parser.add_argument("--calib", type=str, default=None, help="calib file, overwrite focal")
@@ -32,7 +31,6 @@ if __name__ == "__main__":
     opt.weights = Path(args.weight)         # checkpoint file
     opt.disable_vis = not args.viz          # visualization
     opt.focal = args.focal                  # focal length
-    opt.depth_scale = args.depth_scale      # depth scale factor
 
     # global ba on frontend, 0 (set to off) by default
     opt.global_ba_frontend = args.global_ba_frontend   # frequency to run global ba on frontend

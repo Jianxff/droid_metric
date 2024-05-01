@@ -15,20 +15,18 @@ class PosedImageStream(Dataset):
         image_dir: Path,
         depth_dir: Optional[Path] = None,
         traje_dir: Optional[Path] = None,
-        depth_scale: float = 1000.0,
         stride: Optional[int] = 1,
         intrinsic: Optional[Union[float, np.ndarray]] = None,
         distort: Optional[np.ndarray] = None,
         resize: Optional[Tuple[int, int]] = None,
     ):
-        self.depth_scale = depth_scale
         self.distort = distort
         self.stride = stride
 
         self.rgb_list = \
             sorted(list(Path(image_dir).glob('*.[p|j][n|p]g')))[::stride]
         self.depth_list = None if not depth_dir \
-            else sorted(list(Path(depth_dir).glob('*.png')))[::stride]
+            else sorted(list(Path(depth_dir).glob('*.npy')))[::stride]
         self.pose_list = None if not traje_dir \
             else sorted(list(Path(traje_dir).glob('*.txt')))[::stride]
 
@@ -58,24 +56,22 @@ class PosedImageStream(Dataset):
         else:
             self.resize = None
 
-    def read_image(self, path: Union[str, Path]) -> np.ndarray:
-        image = cv2.imread(str(path), cv2.IMREAD_UNCHANGED)
-        # # convert rgb
-        # if len(image.shape) == 3 and image.shape[-1] == 3:
-        #     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    def preprocess(self, frame: np.ndarray) -> np.ndarray:
         if self.distort is not None:
-            image = cv2.undistort(image, self.K_origin, self.distort)
+            frame = cv2.undistort(frame, self.K_origin, self.distort)
         if self.resize:
-            image = cv2.resize(image, self.resize)
-        return image
+            frame = cv2.resize(frame, self.resize)
+        return frame
 
     def __len__(self) -> int:
         return len(self.rgb_list)
 
     def __getitem__(self, idx) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
-        rgb = self.read_image(self.rgb_list[idx])
-        depth = None if not self.depth_list else \
-            self.read_image(self.depth_list[idx]).astype(np.float32) / self.depth_scale
+        raw_rgb = cv2.imread(str(self.rgb_list[idx]), cv2.IMREAD_UNCHANGED)
+        raw_depth = None if not self.depth_list else np.load(self.depth_list[idx])
+        # pack data
+        rgb = self.preprocess(raw_rgb)
+        depth = None if not self.depth_list else self.preprocess(raw_depth)
         pose = None if not self.pose_list else np.loadtxt(self.pose_list[idx])
 
         return rgb, depth, pose, self.intrinsic
