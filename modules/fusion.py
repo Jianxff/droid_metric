@@ -170,7 +170,8 @@ def pipeline(
     voxel_length: Optional[float] = 0.05,   # TSDF voxel length
     sdf_trunc: Optional[float] = 0.1,       # TSDF truncation
     depth_trunc: Optional[float] = 5.0,     # TSDF depth truncation
-    colored: Optional[bool] = True          # colored TSDF
+    colored: Optional[bool] = True,         # colored TSDF
+    cv_to_gl: Optional[bool] = True         # convert from opencv to opengl coordinate
 ) -> None:
     stream = PosedImageStream(
         image_dir=image_dir,
@@ -189,5 +190,15 @@ def pipeline(
     )
     
     mesh = extract_mesh(volume, save=mesh_save, viz=viz)
+
+    # convert to opengl
+    if cv_to_gl:
+        convert_cv_to_gl = np.array([
+            [1, 0, 0, 0],
+            [0, -1, 0, 0],
+            [0, 0, -1, 0],
+            [0, 0, 0, 1]
+        ])
+        mesh.transform(convert_cv_to_gl)
 
     return mesh

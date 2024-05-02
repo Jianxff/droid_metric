@@ -22,15 +22,16 @@ if __name__ == "__main__":
     # parser.add_argument("--mesh", type=str, help="save mesh", default=None)
     # parser.add_argument("--traj", type=str, help="save trajectory opencv", default=None)
     
-    parser.add_argument("--depth-scale", type=float, help='depth scale factor', default=1000.0)
     parser.add_argument("--viz", action='store_true', help="visualize", default=False)
     parser.add_argument("--overwrite", action='store_true', help="overwrite existing files", default=False)
+
+    parser.add_argument("--voxel-length", type=float, help="voxel length for fusion", default=0.05)
+    parser.add_argument("--global-ba-frontend", type=int, help="frequency to run global ba on frontend", default=0)
 
     parser.add_argument("--metric-ckpt", type=str, help='checkpoint file', default='./weights/metric_depth_vit_large_800k.pth')
     parser.add_argument("--metric-model", type=str, help='model type', default='v2-L', choices=['v2-L', 'v2-S'])
     parser.add_argument("--droid-ckpt", type=str, help="checkpoint file", default='./weights/droid.pth')
-    parser.add_argument("--global-ba-frontend", help="frequency to run global ba on frontend", type=int, default=0)
-    
+
     args = parser.parse_args()
 
     # directories
@@ -102,8 +103,6 @@ if __name__ == "__main__":
     # save trajectory
     opt.trajectory_path = traj_file
     opt.poses_dir = pose_dir
-    # convert pose to gl, poses only
-    opt.convert_pose_gl = True
 
     # run droid-slam
     Droid.run(rgb_dir, opt, depth_dir=depth_dir)
@@ -117,7 +116,9 @@ if __name__ == "__main__":
         intrinsic=intr,
         distort=distort,
         viz=False,
-        mesh_save=(mesh_file.parent / 'mesh_fusion_raw.ply')
+        voxel_length=args.voxel_length,
+        mesh_save=(mesh_file.parent / 'mesh_fusion_raw.ply'),
+        cv_to_gl=True
     )
     
     RGBDFusion.simplify_mesh(
