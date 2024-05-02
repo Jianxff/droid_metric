@@ -100,18 +100,10 @@ def fusion(
 
 def extract_mesh(
     volume:o3d.pipelines.integration.ScalableTSDFVolume, 
-    save: Optional[Union[str, Path]] = None,
-    viz: Optional[bool] = False
 ) -> o3d.geometry.TriangleMesh:
     print('[TSDF] extracting mesh')
     mesh = volume.extract_triangle_mesh()
     # mesh.compute_vertex_normals()
-
-    if viz:
-        o3d.visualization.draw_geometries([mesh])
-    if save is not None:
-        o3d.io.write_triangle_mesh(str(save), mesh)
-
     return mesh
 
 
@@ -189,7 +181,7 @@ def pipeline(
         colored=colored
     )
     
-    mesh = extract_mesh(volume, save=mesh_save, viz=viz)
+    mesh = extract_mesh(volume)
 
     # convert to opengl
     if cv_to_gl:
@@ -200,5 +192,11 @@ def pipeline(
             [0, 0, 0, 1]
         ])
         mesh.transform(convert_cv_to_gl)
+
+    if mesh_save:
+        o3d.io.write_triangle_mesh(str(mesh_save), mesh)
+    
+    if viz:
+        o3d.visualization.draw_geometries([mesh])
 
     return mesh

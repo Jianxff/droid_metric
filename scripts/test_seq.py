@@ -23,7 +23,7 @@ if __name__ == "__main__":
     
     parser.add_argument("--viz", action='store_true', help="visualize", default=False)
     parser.add_argument("--overwrite", action='store_true', help="overwrite existing files", default=False)
-    parser.add_argument("--fusion", action='store_true', help="run rgbd fusion", default=True)
+    parser.add_argument("--fusion", action='store_true', help="run rgbd fusion", default=False)
     
     parser.add_argument("--voxel-length", type=float, help="voxel length for fusion", default=0.05)
     parser.add_argument("--global-ba-frontend", type=int, help="frequency to run global ba on frontend", default=0)

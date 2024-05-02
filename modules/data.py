@@ -67,7 +67,7 @@ class PosedImageStream(Dataset):
         return len(self.rgb_list)
 
     def __getitem__(self, idx) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
-        raw_rgb = cv2.imread(str(self.rgb_list[idx]), cv2.IMREAD_UNCHANGED)
+        raw_rgb = cv2.imread(str(self.rgb_list[idx]), cv2.IMREAD_COLOR).astype(np.uint8)
         raw_depth = None if not self.depth_list else np.load(self.depth_list[idx])
         # pack data
         rgb = self.preprocess(raw_rgb)
