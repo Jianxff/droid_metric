@@ -23,7 +23,7 @@ if __name__ == "__main__":
 
     if args.calib:
         calib = np.loadtxt(args.calib)
-        args.focal = (calib[0] + calib[1]) / 2
+        args.focal = (abs(calib[0]) + abs(calib[1])) / 2
 
     metric = Metric(
         checkpoint=args.ckpt,

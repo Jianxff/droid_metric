@@ -24,7 +24,8 @@ if __name__ == "__main__":
     
     parser.add_argument("--viz", action='store_true', help="visualize", default=False)
     parser.add_argument("--overwrite", action='store_true', help="overwrite existing files", default=False)
-
+    parser.add_argument("--fusion", action='store_true', help="run rgbd fusion", default=True)
+    
     parser.add_argument("--voxel-length", type=float, help="voxel length for fusion", default=0.05)
     parser.add_argument("--global-ba-frontend", type=int, help="frequency to run global ba on frontend", default=0)
 
@@ -109,23 +110,24 @@ if __name__ == "__main__":
 
 
     # fusion ###############################################################
-    mesh = RGBDFusion.pipeline(
-        image_dir=rgb_dir,
-        depth_dir=depth_dir,
-        traj_dir=pose_dir,
-        intrinsic=intr,
-        distort=distort,
-        viz=False,
-        voxel_length=args.voxel_length,
-        mesh_save=(mesh_file.parent / 'mesh_fusion_raw.ply'),
-        cv_to_gl=True
-    )
-    
-    RGBDFusion.simplify_mesh(
-        mesh=mesh,
-        voxel_size=0.05,
-        save=mesh_file
-    )
+    if args.fusion:
+        mesh = RGBDFusion.pipeline(
+            image_dir=rgb_dir,
+            depth_dir=depth_dir,
+            traj_dir=pose_dir,
+            intrinsic=intr,
+            distort=distort,
+            viz=False,
+            voxel_length=args.voxel_length,
+            mesh_save=(mesh_file.parent / 'mesh_fusion_raw.ply'),
+            cv_to_gl=True
+        )
+        
+        RGBDFusion.simplify_mesh(
+            mesh=mesh,
+            voxel_size=0.05,
+            save=mesh_file
+        )
 
 
 
