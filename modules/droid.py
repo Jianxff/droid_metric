@@ -39,7 +39,6 @@ class Options:
     intrinsic: np.ndarray = None
     focal: float = None
     trajectory_path: Path = None
-    convert_pose_gl: bool = False
     poses_dir: Path = None
     distort: np.ndarray = None
     global_ba_frontend: int = 0
@@ -144,6 +143,6 @@ def run(
     # save pose44 matrix under opencv/opengl coordinate, ordered by frame
     if setting.poses_dir is not None:
         from .utils import trajectory_to_poses
-        trajectory_to_poses(traj_est, setting.poses_dir, convert_opengl=setting.convert_pose_gl)
+        trajectory_to_poses(traj_est, setting.poses_dir)
     
     print('finished')

@@ -126,7 +126,6 @@ def quaternion_to_matrix(q: np.ndarray) -> np.ndarray:
 def trajectory_to_poses(
     traj: Union[str, Path, np.ndarray],
     out_dir: Union[str, Path],
-    convert_opengl: bool = False
 ) -> None:
     if isinstance(traj, (str, Path)):
         traj = np.loadtxt(traj)
@@ -142,8 +141,6 @@ def trajectory_to_poses(
         # Twc = [R | t]
         T[:3, :3] = R
         T[:3, 3] = t
-        if convert_opengl:
-            T = np.array([[1, 0, 0, 0], [0, -1, 0, 0], [0, 0, -1, 0], [0, 0, 0, 1]]) @ T 
         # write to poses
         np.savetxt(out_dir / f'{i:06d}.txt', T)
 
