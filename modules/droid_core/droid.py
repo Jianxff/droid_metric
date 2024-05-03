@@ -35,7 +35,7 @@ class Droid:
         # visualizer
         if not self.disable_vis:
             from .visualization import droid_visualization
-            self.visualizer = Process(target=droid_visualization, args=(self.video,))
+            self.visualizer = Process(target=droid_visualization, args=(self.video, 'cuda:0', self.args.vis_save))
             self.visualizer.start()
 
         # post processor - fill in poses for non-keyframes
@@ -72,7 +72,7 @@ class Droid:
             # self.backend()
 
     def terminate(self, stream=None):
-        """ terminate the visualization process, return poses [t, q] """
+        """ terminate the visualization process, return timestamp and poses [t, q] """
 
         del self.frontend
 
@@ -85,5 +85,11 @@ class Droid:
         self.backend(12)
 
         camera_trajectory = self.traj_filler(stream)
-        return camera_trajectory.inv().data.cpu().numpy()
+        camera_trajectory = camera_trajectory.inv().data.cpu().numpy()
+
+        # fill timestamp
+        timestamps = np.arange(len(camera_trajectory)).reshape(-1, 1)
+        traj_tum = np.concatenate([timestamps, camera_trajectory], axis=1)
+        
+        return traj_tum
 

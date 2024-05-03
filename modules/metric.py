@@ -26,8 +26,8 @@ class Metric3D:
 
     def __init__(
         self,
-        checkpoint: Union[str, Path] = './weights/metric_depth_vit_large_800k.pth',
-        model_name: str = 'v2-L',
+        checkpoint: Union[str, Path] = './weights/metric_depth_vit_giant2_800k.pth',
+        model_name: str = 'v2-g',
     ) -> None:
         checkpoint = Path(checkpoint).resolve()
         cfg:Config = self._load_config_(model_name, checkpoint)

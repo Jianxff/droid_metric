@@ -51,7 +51,7 @@ def create_point_actor(points, colors):
     point_cloud.colors = o3d.utility.Vector3dVector(colors)
     return point_cloud
 
-def droid_visualization(video, device="cuda:0"):
+def droid_visualization(video, device="cuda:0", vis_save=None):
     """ DROID visualization frontend """
 
     torch.cuda.set_device(device)
@@ -66,6 +66,7 @@ def droid_visualization(video, device="cuda:0"):
 
     def increase_filter(vis):
         droid_visualization.filter_thresh *= 2
+        print(f"filter threshold: {droid_visualization.filter_thresh}")
         with droid_visualization.video.get_lock():
             droid_visualization.video.dirty[:droid_visualization.video.counter.value] = True
 
@@ -153,4 +154,19 @@ def droid_visualization(video, device="cuda:0"):
     vis.get_render_option().load_from_json(str(Path(__file__).parent / "misc/renderoption.json"))
 
     vis.run()
+
+    # save traj ply for visualization
+    if vis_save is None:
+        vis_save = Path(vis_save)
+        pcd = o3d.geometry.PointCloud()
+        for actor in droid_visualization.points.values():
+            pcd += actor
+        o3d.io.write_point_cloud(str(vis_save / 'scene.plt'), pcd)
+
+        # save traj
+        lineset = o3d.geometry.LineSet()
+        for cam in droid_visualization.cameras.values():
+            lineset += cam
+        o3d.io.write_line_set(str(vis_save / 'traj.ply'), lineset)
+
     vis.destroy_window()

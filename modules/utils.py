@@ -135,7 +135,7 @@ def trajectory_to_poses(
     
     for i in range(len(traj)):
         pose = traj[i]
-        t, q = pose[:3], pose[3:]
+        t, q = pose[1:4], pose[4:]
         R = quaternion_to_matrix(q)
         T = np.eye(4)
         # Twc = [R | t]

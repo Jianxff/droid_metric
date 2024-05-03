@@ -35,6 +35,7 @@ class Options:
     backend_nms: int = 3
     upsample: bool = False
     reconstruction_path: Path = None
+    vis_save: Path = None
     # new options
     intrinsic: np.ndarray = None
     focal: float = None
