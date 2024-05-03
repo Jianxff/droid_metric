@@ -156,12 +156,16 @@ def droid_visualization(video, device="cuda:0", vis_save=None):
     vis.run()
 
     # save traj ply for visualization
-    if vis_save is None:
+    if vis_save is not None:
+        print('saving visualization scene')
         vis_save = Path(vis_save)
+        import os
+        os.makedirs(vis_save, exist_ok=True)
+        
         pcd = o3d.geometry.PointCloud()
         for actor in droid_visualization.points.values():
             pcd += actor
-        o3d.io.write_point_cloud(str(vis_save / 'scene.plt'), pcd)
+        o3d.io.write_point_cloud(str(vis_save / 'scene.ply'), pcd)
 
         # save traj
         lineset = o3d.geometry.LineSet()

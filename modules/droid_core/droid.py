@@ -82,7 +82,7 @@ class Droid:
 
         torch.cuda.empty_cache()
         print("#" * 32)
-        self.backend(12)
+        self.backend(20)
 
         camera_trajectory = self.traj_filler(stream)
         camera_trajectory = camera_trajectory.inv().data.cpu().numpy()
