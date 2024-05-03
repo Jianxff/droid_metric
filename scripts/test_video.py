@@ -30,7 +30,7 @@ if __name__ == "__main__":
     parser.add_argument("--global-ba-frontend", type=int, help="frequency to run global ba on frontend", default=0)
 
     parser.add_argument("--metric-ckpt", type=str, help='checkpoint file', default='./weights/metric_depth_vit_large_800k.pth')
-    parser.add_argument("--metric-model", type=str, help='model type', default='v2-L', choices=['v2-L', 'v2-S'])
+    parser.add_argument("--metric-model", type=str, help='model type', default='v2-L', choices=['v2-L', 'v2-S', 'v2-g'])
     parser.add_argument("--droid-ckpt", type=str, help="checkpoint file", default='./weights/droid.pth')
 
     args = parser.parse_args()
@@ -62,7 +62,6 @@ if __name__ == "__main__":
     calib = np.loadtxt(str(calib_file))
     intr = calib[:4]
     distort = calib[4:] if len(calib) > 4 else None
-    fxy = (intr[0] + intr[1]) / 2
 
     # video sample ###############################################################
     sample_from_video(
@@ -83,7 +82,7 @@ if __name__ == "__main__":
         if os.path.exists(str(depth_dir / f'{image.stem}.npy')) and not args.overwrite:
             continue
 
-        depth = metric(image, fxy)
+        depth = metric(image, intr)
         # save orignal depth
         np.save(str(depth_dir / f'{image.stem}.npy'), depth)
         # save colormap

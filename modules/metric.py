@@ -26,8 +26,8 @@ class Metric3D:
 
     def __init__(
         self,
-        checkpoint: Union[str, Path] = './weights/metric_depth_vit_giant2_800k.pth',
-        model_name: str = 'v2-g',
+        checkpoint: Union[str, Path] = './weights/metric_depth_vit_large_800k.pth',
+        model_name: str = 'v2-L',
     ) -> None:
         checkpoint = Path(checkpoint).resolve()
         cfg:Config = self._load_config_(model_name, checkpoint)
@@ -44,7 +44,7 @@ class Metric3D:
     def __call__(
         self,
         rgb_image: Union[np.ndarray, Image.Image, str, Path],
-        focal: Optional[float] = None,
+        calib: Union[str, Path, np.ndarray]
     ) -> np.ndarray:
         # read image
         if isinstance(rgb_image, (str, Path)):
@@ -53,9 +53,9 @@ class Metric3D:
             rgb_image = np.array(rgb_image)
         # get intrinsic
         h, w = rgb_image.shape[:2]
-        if focal is None:
-            focal = np.max([h, w])
-        intrinsic = [focal, focal, w/2, h/2]
+        if isinstance(calib, (str, Path)):
+            calib = np.loadtxt(calib)
+        intrinsic = calib[:4]
         # transform image
         rgb_input, cam_models_stacks, pad, label_scale_factor = \
             transform_test_data_scalecano(rgb_image, intrinsic, self.cfg_.data_basic)
@@ -82,11 +82,12 @@ class Metric3D:
         checkpoint: Union[str, Path],
     ) -> Config:
         config_path = metric3d_path / 'mono/configs/HourglassDecoder'
-        assert model_name in ['v2-L', 'v2-S'], f"Model {model_name} not supported"
+        assert model_name in ['v2-L', 'v2-S', 'v2-g'], f"Model {model_name} not supported"
         # load config file
         cfg = Config.fromfile(
             str(config_path / 'vit.raft5.large.py') if model_name == 'v2-L' 
-            else str(config_path / 'vit.raft5.small.py')
+            else str(config_path / 'vit.raft5.small.py') if model_name == 'v2-S' 
+            else str(config_path / 'vit.raft5.giant2.py')
         )
         cfg.load_from = str(checkpoint)
         # load data info
