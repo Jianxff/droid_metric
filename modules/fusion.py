@@ -103,51 +103,57 @@ def extract_mesh(
 ) -> o3d.geometry.TriangleMesh:
     print('[TSDF] extracting mesh')
     mesh = volume.extract_triangle_mesh()
-    # mesh.compute_vertex_normals()
+    mesh.compute_vertex_normals()
     return mesh
 
 
-def extract_point_cloud(
-    volume:o3d.pipelines.integration.ScalableTSDFVolume,
-    save: Optional[Union[str, Path]] = None,
-    viz: Optional[bool] = False
-) -> o3d.geometry.PointCloud:
-    print('[TSDF] extracting point cloud')
-    pcd = volume.extract_point_cloud()
+# def extract_point_cloud(
+#     volume:o3d.pipelines.integration.ScalableTSDFVolume,
+#     save: Optional[Union[str, Path]] = None,
+#     viz: Optional[bool] = False
+# ) -> o3d.geometry.PointCloud:
+#     print('[TSDF] extracting point cloud')
+#     pcd = volume.extract_point_cloud()
 
-    if viz:
-        o3d.visualization.draw_geometries([pcd])
-    if save is not None:
-        o3d.io.write_point_cloud(str(save), pcd)
+#     if viz:
+#         o3d.visualization.draw_geometries([pcd])
+#     if save is not None:
+#         o3d.io.write_point_cloud(str(save), pcd)
 
-    return pcd
+#     return pcd
     
 
 
 def simplify_mesh(
     mesh: Union[str, Path, o3d.geometry.TriangleMesh],
+    decimation: Optional[int] = None,
     voxel_size: Optional[float] = 0.05,
+    smooth_iter: Optional[int] = 100,
     save: Optional[Union[str, Path]] = None
 ) -> o3d.geometry.TriangleMesh:
     if isinstance(mesh, (str, Path)):
         mesh = o3d.io.read_triangle_mesh(str(mesh))
-    mesh.compute_vertex_normals()
 
     print('[TSDF] simplifying mesh')
-    # simplify
-    mesh_smp = mesh.simplify_vertex_clustering(
-        voxel_size=voxel_size,
-        contraction=o3d.geometry.SimplificationContraction.Average
-    )
     # smooth
-    mesh_smp = mesh_smp.filter_smooth_taubin(number_of_iterations=100)
-    mesh_smp.compute_vertex_normals()
+    if smooth_iter and smooth_iter > 0:
+        mesh = mesh.filter_smooth_taubin(number_of_iterations=smooth_iter)
+    # simplify
+    if decimation and decimation > 0:
+        mesh = mesh.simplify_quadric_decimation(target_number_of_triangles=decimation)
+    if voxel_size and voxel_size > 0:
+        mesh = mesh.simplify_vertex_clustering(
+            voxel_size=voxel_size,
+            contraction=o3d.geometry.SimplificationContraction.Average
+        )
+
+    mesh.compute_vertex_normals()
 
     # write to file
     if save is not None:
-        o3d.io.write_triangle_mesh(str(save), mesh_smp)
+        o3d.io.write_triangle_mesh(str(save), mesh)
 
-    return mesh_smp
+    return mesh
 
 
  
@@ -182,6 +188,16 @@ def pipeline(
     )
     
     mesh = extract_mesh(volume)
+
+    # remove small clusters
+    # with o3d.utility.VerbosityContextManager(o3d.utility.VerbosityLevel.Debug) as cm:
+    triangle_clusters, cluster_n_triangles, cluster_area = (mesh.cluster_connected_triangles())
+    triangle_clusters = np.asarray(triangle_clusters)
+    cluster_n_triangles = np.asarray(cluster_n_triangles)
+    cluster_area = np.asarray(cluster_area)
+
+    triangles_to_remove = cluster_n_triangles[triangle_clusters] < 200
+    mesh.remove_triangles_by_mask(triangles_to_remove)
 
     # convert to opengl
     if cv_to_gl:

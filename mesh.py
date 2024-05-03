@@ -18,6 +18,10 @@ if __name__ == "__main__":
     parser.add_argument("--calib", type=str, default=None, help="calib file, overwrite focal")
     parser.add_argument("--mesh", type=str, default=None, help="save mesh", required=True)
     parser.add_argument("--voxel_length", type=float, default=0.05, help="voxel length")
+    # simply
+    parser.add_argument("--smp_decimation", type=int, default=6500, help="target_number_of_triangles")
+    parser.add_argument("--smp_voxel_length", type=float, default=None, help="voxel length for simplification")
+    parser.add_argument("--smooth_iter", type=int, default=100, help="number of smoothing iterations")
 
     args = parser.parse_args()
 
@@ -43,6 +47,8 @@ if __name__ == "__main__":
     
     RGBDFusion.simplify_mesh(
         mesh=mesh,
-        voxel_size=0.05,
-        save=args.mesh
+        save=args.mesh,
+        decimation=args.smp_decimation,
+        voxel_size=args.smp_voxel_length,
+        smooth_iter=args.smooth_iter
     )
