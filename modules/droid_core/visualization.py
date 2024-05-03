@@ -62,7 +62,7 @@ def droid_visualization(video, device="cuda:0", vis_save=None):
     droid_visualization.scale = 1.0
     droid_visualization.ix = 0
 
-    droid_visualization.filter_thresh = 0.005
+    droid_visualization.filter_thresh = 1.28
 
     def increase_filter(vis):
         droid_visualization.filter_thresh *= 2
