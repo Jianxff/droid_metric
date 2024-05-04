@@ -62,8 +62,8 @@ class PosedImageStream(Dataset):
         raw_rgb = cv2.imread(str(self.rgb_list[idx]), cv2.IMREAD_COLOR).astype(np.uint8)
         raw_depth = None if not self.depth_list else np.load(self.depth_list[idx])
         # process data
-        rgb = cv2.resize(rgb, self.resize) if self.resize else raw_rgb
-        depth = None if not self.depth_list else (cv2.resize(depth, self.resize) if self.resize else raw_depth)
+        rgb = cv2.resize(raw_rgb, self.resize) if self.resize else raw_rgb
+        depth = None if not self.depth_list else (cv2.resize(raw_depth, self.resize) if self.resize else raw_depth)
         pose = None if not self.pose_list else np.loadtxt(self.pose_list[idx])
 
         return rgb, depth, pose, self.intrinsic
