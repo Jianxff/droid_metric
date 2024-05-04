@@ -36,22 +36,22 @@ For video sampling, check `scripts/sample.py`
 ###### 3. run
 ```bash
 ## depth estimate
-python depth.py --images $/path/to/images --out $/path/to/output --calib $/path/to/calib/file
+python depth.py --images $/path/to/images --out $/path/to/output --intr $/path/to/intrinsic/file
 # for more options, check `depth.py`
 
 ## droid-slam
-python run.py --rgb $/path/to/rgb/dir --depth $/path/to/depth/dir --calib $/path/to/calib/file --viz
+python run.py --rgb $/path/to/rgb/dir --depth $/path/to/depth/dir --intr $/path/to/intrinsic/file --viz
 # for more options, check `run.py`
 
 ## mesh recon
-python mesh.py --rgb $/path/to/rgb/dir --depth $/path/to/depth/dir --traj $/path/to/pose/dir --calib $/path/to/calib/file --mesh $/path/to/output/mesh/ply
+python mesh.py --rgb $/path/to/rgb/dir --depth $/path/to/depth/dir --traj $/path/to/pose/dir --intr $/path/to/intrinsic/file --mesh $/path/to/output/mesh/ply
 # for more options, check `mesh.py`
 ```
 
 ##### 4.scripts
 ```bash
 ## test depth estimate, droid slam and mesh reconstruction for rgb image sequence
-python -m scripts.test_seq --rgb $/path/to/rgb/dir --depth $/path/to/depth/dir --poses $/path/to/pose/dir --mesh $/path/to/output/mesh/ply --calib $/path/to/calib/file --viz
+python -m scripts.test_seq --rgb $/path/to/rgb/dir --depth $/path/to/depth/dir --poses $/path/to/pose/dir --mesh $/path/to/output/mesh/ply --intr $/path/to/intrinsic/file --viz
 ```
 
 

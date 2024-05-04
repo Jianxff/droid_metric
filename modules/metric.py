@@ -44,7 +44,9 @@ class Metric3D:
     def __call__(
         self,
         rgb_image: Union[np.ndarray, Image.Image, str, Path],
-        calib: Union[str, Path, np.ndarray]
+        intrinsic: Union[str, Path, np.ndarray],
+        d_max: Optional[float] = 300,
+        d_min: Optional[float] = 0
     ) -> np.ndarray:
         # read image
         if isinstance(rgb_image, (str, Path)):
@@ -53,9 +55,9 @@ class Metric3D:
             rgb_image = np.array(rgb_image)
         # get intrinsic
         h, w = rgb_image.shape[:2]
-        if isinstance(calib, (str, Path)):
-            calib = np.loadtxt(calib)
-        intrinsic = calib[:4]
+        if isinstance(intrinsic, (str, Path)):
+            intrinsic = np.loadtxt(intrinsic)
+        intrinsic = intrinsic[:4]
         # transform image
         rgb_input, cam_models_stacks, pad, label_scale_factor = \
             transform_test_data_scalecano(rgb_image, intrinsic, self.cfg_.data_basic)
@@ -72,8 +74,10 @@ class Metric3D:
             ori_shape=[h, w],
         )
         # post process
+        # pred_depth = (pred_depth > 0) * (pred_depth < 300) * pred_depth
         pred_depth = pred_depth.squeeze().cpu().numpy()
-        pred_depth[pred_depth<0] = 0
+        pred_depth[pred_depth > d_max] = 0
+        pred_depth[pred_depth < d_min] = 0
         return pred_depth
 
     def _load_config_(
@@ -81,6 +85,7 @@ class Metric3D:
         model_name: str,
         checkpoint: Union[str, Path],
     ) -> Config:
+        print(f'Loading model {model_name} from {checkpoint}')
         config_path = metric3d_path / 'mono/configs/HourglassDecoder'
         assert model_name in ['v2-L', 'v2-S', 'v2-g'], f"Model {model_name} not supported"
         # load config file

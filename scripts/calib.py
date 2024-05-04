@@ -11,6 +11,11 @@ if __name__ == '__main__':
     parser.add_argument("--write", type=str, default='calib.txt', help="output file")
     args = parser.parse_args()
 
+    print(f'pattern size: {args.pattern_size}')
+
+    if args.pattern == 'circle':
+        args.pattern_size = (args.pattern_size[1], args.pattern_size[0])
+
     _, intr, dist = utils.calibrate_camera(
         images=args.input, 
         pattern_type=args.pattern, 

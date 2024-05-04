@@ -20,7 +20,7 @@ class Options:
     stereo: bool = False
     t0: int = 0
     stride: int = 1
-    buffer: int = 512
+    buffer: int = 1024
     disable_vis: bool = True
     beta: float = 0.3
     warmup: int = 8
@@ -41,7 +41,6 @@ class Options:
     focal: float = None
     trajectory_path: Path = None
     poses_dir: Path = None
-    distort: np.ndarray = None
     global_ba_frontend: int = 0
 
 def show_image(image):
@@ -57,7 +56,6 @@ class RGBDStream(PosedImageStream):
         depth_dir: Optional[Path],
         stride: Optional[int] = 1,
         intrinsic: Optional[Union[float, np.ndarray]] = None,
-        distort: Optional[np.ndarray] = None,
         resize: Optional[Tuple[int, int]] = None,
     ) -> None:
         super().__init__(
@@ -65,7 +63,6 @@ class RGBDStream(PosedImageStream):
             depth_dir=depth_dir,
             stride=stride,
             intrinsic=intrinsic,
-            distort=distort,
             resize=resize
         )
 
@@ -101,7 +98,6 @@ def run(
         depth_dir=depth_dir,
         stride=setting.stride,
         intrinsic=setting.intrinsic if setting.intrinsic is not None else setting.focal,
-        distort=setting.distort,
         resize=(512, 384)
     )
 

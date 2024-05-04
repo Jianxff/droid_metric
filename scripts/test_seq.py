@@ -54,9 +54,7 @@ if __name__ == "__main__":
     os.makedirs(pose_dir, exist_ok=True)
 
     # calibration
-    calib = np.loadtxt(calib_file)
-    intr = calib[:4]
-    distort = calib[4:] if len(calib) > 4 else None
+    intr = np.loadtxt(calib_file)[:4]
 
     # metric 3d ###############################################################
     metric = Metric(
@@ -84,7 +82,6 @@ if __name__ == "__main__":
     opt.disable_vis = not args.viz          # visualization
     # calibration
     opt.intrinsic = intr
-    opt.distort = distort
     # global ba on frontend, 0 (set to off) by default
     opt.global_ba_frontend = args.global_ba_frontend   # frequency to run global ba on frontend
     # save trajectory
@@ -102,7 +99,6 @@ if __name__ == "__main__":
             depth_dir=depth_dir,
             traj_dir=pose_dir,
             intrinsic=intr,
-            distort=distort,
             viz=False,
             voxel_length=args.voxel_length,
             mesh_save=(mesh_file.parent / 'mesh_fusion_raw.ply'),

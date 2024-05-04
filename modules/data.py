@@ -17,10 +17,8 @@ class PosedImageStream(Dataset):
         traje_dir: Optional[Path] = None,
         stride: Optional[int] = 1,
         intrinsic: Optional[Union[float, np.ndarray]] = None,
-        distort: Optional[np.ndarray] = None,
         resize: Optional[Tuple[int, int]] = None,
     ):
-        self.distort = distort
         self.stride = stride
 
         self.rgb_list = \
@@ -55,13 +53,7 @@ class PosedImageStream(Dataset):
             self.image_size = (w1, h1)
         else:
             self.resize = None
-
-    def preprocess(self, frame: np.ndarray) -> np.ndarray:
-        if self.distort is not None:
-            frame = cv2.undistort(frame, self.K_origin, self.distort)
-        if self.resize:
-            frame = cv2.resize(frame, self.resize)
-        return frame
+            
 
     def __len__(self) -> int:
         return len(self.rgb_list)
@@ -69,9 +61,9 @@ class PosedImageStream(Dataset):
     def __getitem__(self, idx) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         raw_rgb = cv2.imread(str(self.rgb_list[idx]), cv2.IMREAD_COLOR).astype(np.uint8)
         raw_depth = None if not self.depth_list else np.load(self.depth_list[idx])
-        # pack data
-        rgb = self.preprocess(raw_rgb)
-        depth = None if not self.depth_list else self.preprocess(raw_depth)
+        # process data
+        rgb = cv2.resize(rgb, self.resize) if self.resize else raw_rgb
+        depth = None if not self.depth_list else (cv2.resize(depth, self.resize) if self.resize else raw_depth)
         pose = None if not self.pose_list else np.loadtxt(self.pose_list[idx])
 
         return rgb, depth, pose, self.intrinsic

@@ -162,7 +162,6 @@ def pipeline(
     depth_dir: Optional[Union[str, Path]],      # depth image directory
     traj_dir: Optional[Union[str, Path]],       # trajectory files directory
     intrinsic: Optional[Union[float, np.ndarray]] = None,   # camera intrinsic
-    distort: Optional[np.ndarray] = None,                   # camera distortion
     mesh_save: Optional[Union[str, Path]] = None,   # save mesh to file
     viz: Optional[bool] = False,            # visualize mesh with Open3D
     voxel_length: Optional[float] = 0.05,   # TSDF voxel length
@@ -176,7 +175,6 @@ def pipeline(
         depth_dir=depth_dir,
         traje_dir=traj_dir,
         intrinsic=intrinsic,
-        distort=distort,
     )
 
     volume = fusion(
