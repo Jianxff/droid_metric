@@ -15,11 +15,11 @@ if __name__ == "__main__":
     parser.add_argument("--viz", type=bool, default=False, help="visualize")
     parser.add_argument("--intr", type=str, default=None, help="intrinsic file")
     parser.add_argument("--mesh", type=str, default=None, help="save mesh", required=True)
-    parser.add_argument("--voxel_length", type=float, default=0.05, help="voxel length")
+    parser.add_argument("--voxel_length", type=float, default=0.02, help="voxel length")
     # simply
-    parser.add_argument("--smp_decimation", type=int, default=6500, help="target_number_of_triangles")
+    parser.add_argument("--smp_decimation", type=int, default=0, help="target_number_of_triangles")
     parser.add_argument("--smp_voxel_length", type=float, default=None, help="voxel length for simplification")
-    parser.add_argument("--smooth_iter", type=int, default=100, help="number of smoothing iterations")
+    parser.add_argument("--smooth_iter", type=int, default=40, help="number of smoothing iterations")
 
     args = parser.parse_args()
 
