@@ -54,13 +54,19 @@ python mesh.py --rgb $/path/to/rgb/dir --depth $/path/to/depth/dir --traj $/path
 python -m scripts.test_seq --rgb $/path/to/rgb/dir --depth $/path/to/depth/dir --poses $/path/to/pose/dir --mesh $/path/to/output/mesh/ply --intr $/path/to/intrinsic/file --viz
 ```
 
+### experiment
+Tested on part of [ICL-NUIM](https://www.doc.ic.ac.uk/~ahanda/VaFRIC/iclnuim.html) and [ADVIO](https://github.com/AaltoVision/ADVIO) dataset. `droid_D` means DROID-SLAM with Metric3D, `droid` mean oroginal DROID-SLAM and `vslam` means the [OpenVSLAM](https://github.com/stella-cv/stella_vslam) framework. Notice that vslam method get lost on ICL-OfficeRoom-1 and all sequences of ADVIO.
 
-### preview
-![without depth](assets/w_o_depth.png)
+##### trajectory
 
-***w/o metric depth***
+![icl-traj](assets/traj_icl.png)
 
-![with depth](assets/w_depth.png)
+![advio-traj](assets/traj_advio.png)
 
-***w/ metric depth***
+##### reconstruction
 
+![mesh](assets/mesh.png)
+
+### preview in the wild
+
+![wild](assets/wild.png)
