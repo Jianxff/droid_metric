@@ -55,7 +55,7 @@ python -m scripts.test_seq --rgb $/path/to/rgb/dir --depth $/path/to/depth/dir -
 ```
 
 ### experiment
-Tested on part of [ICL-NUIM](https://www.doc.ic.ac.uk/~ahanda/VaFRIC/iclnuim.html) and [ADVIO](https://github.com/AaltoVision/ADVIO) dataset. `droid_D` means DROID-SLAM with Metric3D, `droid` mean oroginal DROID-SLAM and `vslam` means the [OpenVSLAM](https://github.com/stella-cv/stella_vslam) framework. Notice that vslam method get lost on ICL-OfficeRoom-1 and all sequences of ADVIO.
+Tested on part of [ICL-NUIM](https://www.doc.ic.ac.uk/~ahanda/VaFRIC/iclnuim.html) and [ADVIO](https://github.com/AaltoVision/ADVIO) dataset. `droid_D` means DROID-SLAM with Metric3D, `droid` mean oroginal DROID-SLAM and `vslam` means the [OpenVSLAM](https://github.com/stella-cv/stella_vslam) framework. Notice that vslam method get lost on ICL-OfficeRoom-1 and all sequences of ADVIO. 
 
 ##### trajectory
 
@@ -63,10 +63,12 @@ Tested on part of [ICL-NUIM](https://www.doc.ic.ac.uk/~ahanda/VaFRIC/iclnuim.htm
 
 ![advio-traj](assets/traj_advio.png)
 
+*(some of the trajectories seem not aligned correctly, sorry for that.)*
+
 ##### reconstruction
 
 ![mesh](assets/mesh.png)
 
 ### preview in the wild
 
-![wild](assets/wild.png)
+![wild](assets/wild_p.png)
