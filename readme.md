@@ -26,8 +26,15 @@ cd ../..
 
 ### usage
 ###### 1. pretrained models
-Download the pretrained model following the official page of [DROID-SLAM](https://github.com/princeton-vl/DROID-SLAM) and [Metric3D](https://github.com/YvanYin/Metric3D).
+Download DROID-SLAM and Metric3D pretrained model running
+```bash
+python download_models.py
+```
 
+Download ADVIO dataset running
+```bash
+python download_dataset.py
+```
 
 ###### 2. utils
 For camera calibration, check `scripts/calib.py`
