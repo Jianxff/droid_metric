@@ -18,8 +18,8 @@ conda install pytorch==2.0.0 torchvision==0.15.0 pytorch-cuda=11.7 -c pytorch -c
 # install python packages
 pip install -r requirements.txt
 
-# intsall droid-slam-backend
-cd module/droid_slam
+# install droid-slam-backend
+cd modules/droid_slam
 python setup.py install
 cd ../..
 ```
