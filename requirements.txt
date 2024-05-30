@@ -1,5 +1,6 @@
 opencv-python   
 gdown
+py3_wget
 tqdm 
 # droid slam
 torch-scatter
