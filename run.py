@@ -11,8 +11,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--rgb", type=str, required=True, help="directory to rgb images")
     parser.add_argument("--depth", type=str, help="depth directory", default=None)
-    parser.add_argument("--traj", type=str, help="trajectory file", default="./trajectory.txt")
-    parser.add_argument("--poses", type=str, help="result directory", default=None)
+    parser.add_argument("--save_traj", type=str, help="trajectory file", default="./trajectory.txt")
+    parser.add_argument("--save_poses", type=str, help="result directory", default=None)
     parser.add_argument("--viz", action='store_true', help="visualize", default=False)
     parser.add_argument("--viz-save", type=str, help="save visualization", default=None)
     parser.add_argument("--intr", type=str, default=None, help="intrinsic file, containing [fx, fy, cx, cy]")
@@ -20,7 +20,7 @@ if __name__ == "__main__":
     parser.add_argument("--global-ba-frontend", type=int, default=0, help="frequency to run global ba on frontend")
     args = parser.parse_args()
 
-    image_dir = Path(args.rgb).resolve()
+    rgb_image_dir = Path(args.rgb).resolve()
     depth_dir = None
     
     if args.depth:
@@ -42,10 +42,11 @@ if __name__ == "__main__":
         print('no calibration provided, will use estimated values')
     
     # save trajectory
-    opt.trajectory_path = Path(args.traj)
-    if args.poses:
-        opt.poses_dir = Path(args.poses)
+    if args.save_traj:
+        opt.trajectory_path = Path(args.save_traj)
+    if args.save_poses:
+        opt.poses_dir = Path(args.save_poses)
 
     # run droid-slam
-    Droid.run(image_dir, opt, depth_dir=depth_dir)
+    Droid.run(rgb_image_dir, opt, depth_dir=depth_dir)
         
