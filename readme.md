@@ -12,17 +12,19 @@ cd droid_metric
 conda create -n droid_metric python=3.9
 conda activate droid_metric
 
-# install pytorch (other versions may also work)
-conda install pytorch==2.0.0 torchvision==0.15.0 pytorch-cuda=11.7 -c pytorch -c nvidia
-
-# install python packages
+# install requirements (other torch/cuda versions may also work)
 pip install -r requirements.txt
+
 
 # install droid-slam-backend
 cd modules/droid_slam
 python setup.py install
 cd ../..
 ```
+
+*If you want to install specific version of `pytorch` and `cuda`, check [this link](https://pytorch.org/get-started/previous-versions/).*
+
+*If you want to install `mmcv` under specific cuda version, check [this link](https://mmcv.readthedocs.io/en/latest/get_started/installation.html).*
 
 ### usage
 ###### 1. pretrained models
@@ -48,11 +50,11 @@ python depth.py --rgb $/path/to/rgb/dir --out $/path/to/output --intr $/path/to/
 
 ## droid-slam
 python run.py --rgb $/path/to/rgb/dir --depth $/path/to/depth/dir --intr $/path/to/intrinsic/file --viz
-# for more options, check `run.py`
+# for more options, check `run.py`. You should run depth estimation first.
 
 ## mesh recon
 python mesh.py --rgb $/path/to/rgb/dir --depth $/path/to/depth/dir --poses $/path/to/pose/dir --intr $/path/to/intrinsic/file --save $/path/to/output/mesh/ply
-# for more options, check `mesh.py`
+# for more options, check `mesh.py`. You should run droid-slam first.
 ```
 
 ##### 4.scripts

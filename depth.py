@@ -29,10 +29,11 @@ if __name__ == "__main__":
         model_name=args.model_name
     )
 
-    image_dir = Path(args.images).resolve()
+    image_dir = Path(args.rgb).resolve()
     images = sorted(list(image_dir.glob('*.[p|j][n|p]g')))
 
     out_dir = Path(args.out).resolve()
+    os.makedirs(out_dir, exist_ok=True)
 
     save_colormap = args.save_colormap
     color_dir = out_dir / 'colormap'
