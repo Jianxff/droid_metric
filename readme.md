@@ -15,7 +15,6 @@ conda activate droid_metric
 # install requirements (other torch/cuda versions may also work)
 pip install -r requirements.txt
 
-
 # install droid-slam-backend
 cd modules/droid_slam
 python setup.py install
@@ -33,7 +32,7 @@ Download DROID-SLAM and Metric3D pretrained model running
 python download_models.py
 ```
 
-Download ADVIO dataset running
+(Optional) Download ADVIO dataset running
 ```bash
 python download_dataset.py
 ```
@@ -49,18 +48,18 @@ python depth.py --rgb $/path/to/rgb/dir --out $/path/to/output --intr $/path/to/
 # for more options, check `depth.py`
 
 ## droid-slam
-python run.py --rgb $/path/to/rgb/dir --depth $/path/to/depth/dir --intr $/path/to/intrinsic/file --viz
+python run.py --rgb $/path/to/rgb/dir --depth $/path/to/depth/dir --intr $/path/to/intrinsic/file --save_poses $/path/to/pose/dir --viz
 # for more options, check `run.py`. You should run depth estimation first.
 
 ## mesh recon
-python mesh.py --rgb $/path/to/rgb/dir --depth $/path/to/depth/dir --poses $/path/to/pose/dir --intr $/path/to/intrinsic/file --save $/path/to/output/mesh/ply
+python mesh.py --rgb $/path/to/rgb/dir --depth $/path/to/depth/dir --poses $/path/to/pose/dir --intr $/path/to/intrinsic/file --save $/path/to/output/ply/mesh
 # for more options, check `mesh.py`. You should run droid-slam first.
 ```
 
 ##### 4.scripts
 ```bash
 ## test depth estimate, droid slam and mesh reconstruction for rgb image sequence
-python -m scripts.test_seq --rgb $/path/to/rgb/dir --depth $/path/to/depth/dir --poses $/path/to/pose/dir --save $/path/to/output/mesh/ply --intr $/path/to/intrinsic/file --viz
+python -m scripts.test_seq --rgb $/path/to/rgb/dir --depth $/path/to/depth/dir --poses $/path/to/pose/dir --save $/path/to/output/ply/mesh --intr $/path/to/intrinsic/file --viz
 ```
 
 ### experiment
