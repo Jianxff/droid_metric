@@ -15,7 +15,6 @@ conda activate droid_metric
 # install requirements (other torch/cuda versions may also work)
 pip install -r requirements.txt
 
-
 # install droid-slam-backend
 cd modules/droid_slam
 python setup.py install
@@ -33,7 +32,7 @@ Download DROID-SLAM and Metric3D pretrained model running
 python download_models.py
 ```
 
-Download ADVIO dataset running
+(Optional) Download ADVIO dataset running
 ```bash
 python download_dataset.py
 ```
