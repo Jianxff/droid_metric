@@ -42,29 +42,44 @@ python download_dataset.py
 For camera calibration, check `scripts/calib.py`
 For video sampling, check `scripts/sample.py`
 
-###### 3. run
+###### 3. run reconstruction
+```bash
+python reconstruct.py --input ${RGB-images dir or video file} --output ${ouptut dir} --intr ${intrinsic file} --viz
+# for more options, check `reconstruct.py`
+# if you do not provide intrinsic, it will be estimated as:
+#  - fx = fy = max{image_width, image_height} * 1.2  (follow COLMAP)
+#  - cx = image_width / 2
+#  - cy = image_height / 2
+```
+
+###### 3*. run reconstruction stepwise
 ```bash
 ## depth estimate
-python depth.py --rgb $/path/to/rgb/dir --out $/path/to/output --intr $/path/to/intrinsic/file
+python depth.py --images ${RGB-images dir} --out ${ouptut dir} --intr ${intrinsic file}
 # for more options, check `depth.py`
 
 ## droid-slam
-python run.py --rgb $/path/to/rgb/dir --depth $/path/to/depth/dir --intr $/path/to/intrinsic/file --viz
-# for more options, check `run.py`. You should run depth estimation first.
+python slam.py --images ${RGB-images dir} --depth ${depth data dir} --intr ${intrinsic file} --out-poses ${output poses dir} --viz
+# for more options, check `slam.py`. You should run depth estimation first.
 
 ## mesh recon
-python mesh.py --rgb $/path/to/rgb/dir --depth $/path/to/depth/dir --poses $/path/to/pose/dir --intr $/path/to/intrinsic/file --save $/path/to/output/mesh/ply
+python mesh.py --images ${RGB-images dir} --depth ${depth data dir} --poses ${poses dir} --intr ${intrinsic file} --save ${output mesh path}
 # for more options, check `mesh.py`. You should run droid-slam first.
 ```
 
-##### 4.scripts
-```bash
-## test depth estimate, droid slam and mesh reconstruction for rgb image sequence
-python -m scripts.test_seq --rgb $/path/to/rgb/dir --depth $/path/to/depth/dir --poses $/path/to/pose/dir --save $/path/to/output/mesh/ply --intr $/path/to/intrinsic/file --viz
+### !note
+The format of intrinsic file should be as follows (4 elements only):
 ```
+# intrinsic.txt
+${fx}
+${fy}
+${cx}
+${cy}
+``` 
+
 
 ### experiment
-Tested on part of [ICL-NUIM](https://www.doc.ic.ac.uk/~ahanda/VaFRIC/iclnuim.html) and [ADVIO](https://github.com/AaltoVision/ADVIO) dataset. `droid_D` means DROID-SLAM with Metric3D, `droid` mean oroginal DROID-SLAM and `vslam` means the [OpenVSLAM](https://github.com/stella-cv/stella_vslam) framework. Notice that vslam method get lost on ICL-OfficeRoom-1 and all sequences of ADVIO. 
+Tested on part of [ICL-NUIM](https://www.doc.ic.ac.uk/~ahanda/VaFRIC/iclnuim.html) and [ADVIO](https://github.com/AaltoVision/ADVIO) dataset. `droid_D` refers to DROID-SLAM with Metric3D, `droid` refers to the oroginal DROID-SLAM and `vslam` refers to the [OpenVSLAM](https://github.com/stella-cv/stella_vslam) framework. Notice that vslam method get lost on ICL-OfficeRoom-1 and all sequences of ADVIO. 
 
 ##### trajectory
 
