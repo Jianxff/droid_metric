@@ -2,7 +2,7 @@
 
 This repo is for project combind [DROID-SLAM](https://github.com/princeton-vl/DROID-SLAM) and [Metric3D](https://github.com/YvanYin/Metric3D), taking metric depth to improve the performance of DROID-SLAM in monocular mode.
 
-### installation
+## Installation
 ```bash
 # clone the repo with '--recursive' to get the submodules
 # or run 'git submodule update --init --recursive' after cloning
@@ -25,8 +25,8 @@ cd ../..
 
 *If you want to install `mmcv` under specific cuda version, check [this link](https://mmcv.readthedocs.io/en/latest/get_started/installation.html).*
 
-### usage
-###### 1. pretrained models
+## Usage
+#### 1. Setup pretrained models
 Download DROID-SLAM and Metric3D pretrained model running
 ```bash
 python download_models.py
@@ -37,11 +37,11 @@ python download_models.py
 python download_dataset.py
 ```
 
-###### 2. utils
+#### 2. Utils
 For camera calibration, check `scripts/calib.py`
 For video sampling, check `scripts/sample.py`
 
-###### 3. run reconstruction
+#### 3. Run reconstruction
 ```bash
 python reconstruct.py --input ${RGB-images dir or video file} --output ${ouptut dir} --intr ${intrinsic file} --viz
 # for more options, check `reconstruct.py`
@@ -51,7 +51,7 @@ python reconstruct.py --input ${RGB-images dir or video file} --output ${ouptut 
 #  - cy = image_height / 2
 ```
 
-###### 3*. run reconstruction stepwise
+#### 3*. Run reconstruction stepwise
 ```bash
 ## depth estimate
 python depth.py --images ${RGB-images dir} --out ${ouptut dir} --intr ${intrinsic file}
@@ -66,7 +66,7 @@ python mesh.py --images ${RGB-images dir} --depth ${depth data dir} --poses ${po
 # for more options, check `mesh.py`. You should run droid-slam first.
 ```
 
-### !note
+#### !Note
 The format of intrinsic file should be as follows (4 elements only):
 ```
 # intrinsic.txt
@@ -77,10 +77,10 @@ ${cy}
 ``` 
 
 
-### experiment
+## Experiment
 Tested on part of [ICL-NUIM](https://www.doc.ic.ac.uk/~ahanda/VaFRIC/iclnuim.html) and [ADVIO](https://github.com/AaltoVision/ADVIO) dataset. `droid_D` refers to DROID-SLAM with Metric3D, `droid` refers to the oroginal DROID-SLAM and `vslam` refers to the [OpenVSLAM](https://github.com/stella-cv/stella_vslam) framework. Notice that vslam method get lost on ICL-OfficeRoom-1 and all sequences of ADVIO. 
 
-##### trajectory
+#### 1. Trajectory
 
 ![icl-traj](assets/traj_icl.png)
 
@@ -88,10 +88,10 @@ Tested on part of [ICL-NUIM](https://www.doc.ic.ac.uk/~ahanda/VaFRIC/iclnuim.htm
 
 *(some of the trajectories seem not aligned correctly, sorry for that.)*
 
-##### reconstruction
+#### 2. Reconstruction
 
 ![mesh](assets/mesh.png)
 
-### preview in the wild
+#### 3. Preview in the wild
 
 ![wild](assets/wild_p.png)
